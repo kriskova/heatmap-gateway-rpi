@@ -14,20 +14,22 @@ HOST = 'https://creative-capital-2019.herokuapp.com'.freeze
 MESSAGE_REGEX = /nodeid: [0-9]{1,3} temp: [0-9]{1,2}.[0-9]{2} humidity: [0-9]{1,2}.[0-9]{2}/
 
 def serial_path
-  if File.exists? MAC_PATH
-    MAC_PATH
-  elsif File.exists? LINUX_ARDUINO_PATH
-    LINUX_ARDUINO_PATH
-  elsif File.exists? LINUX_FTDI_PATH
-    LINUX_FTDI_PATH
-  else
-    fail 'No supported devices found'
-  end
+  @serial_path ||= if File.exists? MAC_PATH
+                    MAC_PATH
+                  elsif File.exists? LINUX_ARDUINO_PATH
+                    LINUX_ARDUINO_PATH
+                  elsif File.exists? LINUX_FTDI_PATH
+                    LINUX_FTDI_PATH
+                  else
+                    fail 'No supported devices found'
+                  end
 end
 
 def baud_rate
   serial_path == LINUX_FTDI_PATH ? 115200 : 9600
 end
+
+puts "Starting to read from #{serial_path}"
 
 serial = SerialPort.new(serial_path, baud_rate, DATA_BITS, STOP_BITS, PARITY)
 
