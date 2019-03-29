@@ -54,4 +54,9 @@ loop do
   end
 
   sleep 1
+
+rescue SocketError, Errno::ECONNREFUSED
+  puts 'Failed to connect to the server. Data is not sent.'
+rescue RuntimeError => e
+  puts "Something went wrong(#{e.inspect}). Maybe next time..."
 end
